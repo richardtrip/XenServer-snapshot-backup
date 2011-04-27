@@ -4,6 +4,7 @@
 # Mark Round, scripts@markround.com
 # http://www.markround.com/snapback
 #
+# 1.4 : dirty hack to support extra SR for backup (custom field backupsr: 2, if anything else use SR1)
 # 1.3 : Added basic lockfile
 # 1.2 : Tidied output, removed VDIs before deleting snapshots and templates
 # 1.1 : Added missing force=true paramaters to snapshot uninstall calls.
@@ -26,7 +27,20 @@ MONTHLY_ON="Sun"
 # Temporary file
 TEMP=/tmp/snapback.$$
 # UUID of the destination SR for backups
-DEST_SR=e871f2df-a195-9c50-5377-be55e749c003
+# DEST_SR=e871f2df-a195-9c50-5377-be55e749c003
+
+# UUID of the destination SR's for backups
+# SR1=7d6813b4-2ea5-b705-895d-22775cf7f7ff
+# SR2=b3b4ff71-f706-ad67-b45b-e4e7be2297d6
+
+SR1=7d6813b4-2ea5-b705-895d-22775cf7f7ff
+
+SR2=b3b4ff71-f706-ad67-b45b-e4e7be2297d6
+
+xe sr-scan uuid=$SR1
+xe sr-scan uuid=$SR2
+
+DEST_SR=$SR1
 
 LOCKFILE=/tmp/snapback.lock
 
@@ -110,6 +124,15 @@ for VM in $RUNNING_VMS; do
 	RETAIN=$(xe vm-param-get uuid=$VM param-name=other-config param-key=XenCenter.CustomFields.retain)	
 	# Not using this yet, as there are some bugs to be worked out...
 	# QUIESCE=$(xe vm-param-get uuid=$VM param-name=other-config param-key=XenCenter.CustomFields.quiesce)	
+
+	if [ "$BACKUPSR" == "2" ]; then
+			echo "Backup Storage Repository = 2"
+			DEST_SR=$SR2						
+		else
+			echo "Backup Storage Repository = 1"
+			DEST_SR=$SR1			
+	fi
+
 
 	if [[ "$SCHEDULE" == "" || "$RETAIN" == "" ]]; then
 		echo "No schedule or retention set, skipping this VM"
