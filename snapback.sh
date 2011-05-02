@@ -1,9 +1,10 @@
 #!/bin/bash
-# snapback.sh 1.3
+# snapback.sh 1.5
 # Simple script to create regular snapshot-based backups for Citrix Xenserver
 # Mark Round, scripts@markround.com
 # http://www.markround.com/snapback
 #
+# 1.5 : Rescan Storage Repository's to cleanup allocated space.
 # 1.4 : dirty hack to support extra SR for backup (custom field backupsr: 2, if anything else use SR1)
 # 1.3 : Added basic lockfile
 # 1.2 : Tidied output, removed VDIs before deleting snapshots and templates
