@@ -170,6 +170,12 @@ for VM in $RUNNING_VMS; do
 	fi
 	echo "Done."
 
+	echo "Rescan Storage Repository's to cleanup allocated space."
+	RUNNING_SRS=$(xe sr-list shared=true | xe_param uuid)
+	for SR in $RUNNING_SRS; do
+	xe sr-scan uuid=$SR
+	done
+
 	echo "= Creating snapshot backup ="
 
 	# Select appropriate snapshot command
