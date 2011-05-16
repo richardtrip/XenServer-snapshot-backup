@@ -1,5 +1,5 @@
 #!/bin/bash
-# snapback.sh 1.5
+# snapback.sh 1.6
 # Simple script to create regular snapshot-based backups for Citrix Xenserver
 # Mark Round, scripts@markround.com
 # http://www.markround.com/snapback
