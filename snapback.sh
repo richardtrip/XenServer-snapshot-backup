@@ -4,6 +4,7 @@
 # Mark Round, scripts@markround.com
 # http://www.markround.com/snapback
 #
+# 1.6 : fix missing BACKUPSR define
 # 1.5 : Rescan Storage Repository's to cleanup allocated space.
 # 1.4 : dirty hack to support extra SR for backup (custom field backupsr: 2, if anything else use SR1)
 # 1.3 : Added basic lockfile
@@ -123,6 +124,7 @@ for VM in $RUNNING_VMS; do
 	echo "= Retrieving backup paramaters ="
 	SCHEDULE=$(xe vm-param-get uuid=$VM param-name=other-config param-key=XenCenter.CustomFields.backup)	
 	RETAIN=$(xe vm-param-get uuid=$VM param-name=other-config param-key=XenCenter.CustomFields.retain)	
+        BACKUPSR=$(xe vm-param-get uuid=$VM param-name=other-config param-key=XenCenter.CustomFields.backupsr)
 	# Not using this yet, as there are some bugs to be worked out...
 	# QUIESCE=$(xe vm-param-get uuid=$VM param-name=other-config param-key=XenCenter.CustomFields.quiesce)	
 
