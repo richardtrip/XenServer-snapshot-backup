@@ -243,3 +243,5 @@ xe vbd-list > /var/run/sr-mount/$DEST_SR/vbd-mapping.txt
 echo "=== Snapshot backup finished at $(date) ==="
 rm $TEMP
 rm $LOCKFILE
+#Backup Pool meta-data:
+xe-backup-metadata -c -k 10 -u $SR1
