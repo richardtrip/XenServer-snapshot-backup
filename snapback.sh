@@ -1,9 +1,10 @@
 #!/bin/bash
-# snapback.sh 1.6
+# snapback.sh 1.7
 # Simple script to create regular snapshot-based backups for Citrix Xenserver
 # Mark Round, scripts@markround.com
 # http://www.markround.com/snapback
 #
+# 1.7 : Add Backup pool meta-data
 # 1.6 : fix missing BACKUPSR define
 # 1.5 : Rescan Storage Repository's to cleanup allocated space.
 # 1.4 : dirty hack to support extra SR for backup (custom field backupsr: 2, if anything else use SR1)
@@ -60,6 +61,8 @@ touch $LOCKFILE
 # Date format must be %Y%m%d so we can sort them
 BACKUP_DATE=$(date +"%Y%m%d")
 
+
+
 # Quick hack to grab the required paramater from the output of the xe command
 function xe_param()
 {
@@ -110,6 +113,12 @@ echo " "
 # Get all running VMs
 # todo: Need to check this works across a pool
 RUNNING_VMS=$(xe vm-list power-state=running is-control-domain=false | xe_param uuid)
+
+echo "Rescan Storage Repository's to cleanup allocated space."
+RUNNING_SRS=$(xe sr-list shared=true | xe_param uuid)
+for SR in $RUNNING_SRS; do
+xe sr-scan uuid=$SR
+done
 
 for VM in $RUNNING_VMS; do
 	VM_NAME="$(xe vm-list uuid=$VM | xe_param name-label)"
@@ -172,12 +181,6 @@ for VM in $RUNNING_VMS; do
 		delete_snapshot $VM_SNAPSHOT_CHECK
 	fi
 	echo "Done."
-
-	echo "Rescan Storage Repository's to cleanup allocated space."
-	RUNNING_SRS=$(xe sr-list shared=true | xe_param uuid)
-	for SR in $RUNNING_SRS; do
-	xe sr-scan uuid=$SR
-	done
 
 	echo "= Creating snapshot backup ="
 
